@@ -10,4 +10,20 @@ public class SaveRequest {
     public void setTextNote(String textNote) {
         this.textNote = textNote;
     }
+
+    public SaveRequest() {
+    }
+
+    public SaveRequest(String textNote) {
+        this.textNote = textNote;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "SaveRequest{" +
+                "textNote='" + textNote + '\'' +
+                '}';
+    }
 }
