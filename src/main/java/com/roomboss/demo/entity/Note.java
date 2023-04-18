@@ -8,17 +8,17 @@ public class Note {
     // should add a status param for better functionality,
     // but it can be added when it's needed
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String textNote;
     private Long createTime;
     private Long updateTime;
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
