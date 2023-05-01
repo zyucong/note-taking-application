@@ -6,39 +6,41 @@ import com.roomboss.demo.service.NoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/server")
-public class ServerController {
+public class NoteController {
 
     @Autowired
     private NoteService noteService;
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerController.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(NoteController.class);
 
     @PostMapping("/save")
-    public Object saveNote(@RequestBody SaveRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<String> saveNote(@RequestBody SaveRequest request) {
         noteService.saveNote(request);
-        return ResponseEntity.ok("success");
+        return Mono.just("success");
     }
 
     @GetMapping("/notes")
-    public List<NoteView> retrieveNotes() {
+    public Mono<List<NoteView>> retrieveNotes() {
         return noteService.getNotes();
     }
 
     @GetMapping("/note")
-    public NoteView retrieveNote(@RequestParam("id") Integer id) {
+    public Mono<NoteView> retrieveNote(@RequestParam("id") Integer id) {
         try {
             return noteService.getNote(id);
         } catch (Exception ex) {
             // a bit fail-safe for now
-            return new NoteView();
+            return Mono.just(new NoteView());
         }
     }
 }

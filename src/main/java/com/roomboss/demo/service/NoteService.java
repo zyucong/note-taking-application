@@ -7,6 +7,7 @@ import com.roomboss.demo.entity.SaveRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ public class NoteService {
     @Autowired
     private NoteDao noteDao;
 
-    public List<NoteView> getNotes() {
+    public Mono<List<NoteView>> getNotes() {
         Iterable<Note> notes = noteDao.findAll();
         List<NoteView> views = Streamable.of(notes).toList().stream()
                 .map(note -> {
@@ -28,10 +29,10 @@ public class NoteService {
                     return view;
                 })
                 .collect(Collectors.toList());
-        return views;
+        return Mono.just(views);
     }
 
-    public NoteView getNote(int id) throws Exception {
+    public Mono<NoteView> getNote(int id) throws Exception {
         if (!noteDao.findById(id).isPresent()) {
             throw new Exception();
         }
@@ -40,14 +41,15 @@ public class NoteService {
         NoteView view = new NoteView();
         view.setId(note.getId());
         view.setTextNote(note.getTextNote());
-        return view;
+        return Mono.just(view);
     }
 
-    public void saveNote(SaveRequest request) {
+    public Mono<String> saveNote(SaveRequest request) {
         Note note = new Note();
         note.setTextNote(request.getTextNote());
         note.setCreateTime(System.currentTimeMillis());
         note.setUpdateTime(System.currentTimeMillis());
         noteDao.save(note);
+        return Mono.just("success");
     }
 }
